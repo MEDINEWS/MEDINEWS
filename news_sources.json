@@ -1,0 +1,35 @@
+
+{
+  "sources": [
+    {
+      "name": "Ministry of Health and Family Welfare",
+      "url": "https://www.mohfw.gov.in/",
+      "category": "Government Health"
+    },
+    {
+      "name": "Press Information Bureau",
+      "url": "https://www.pib.gov.in/",
+      "category": "Health Policy"
+    },
+    {
+      "name": "Indian Nursing Council",
+      "url": "https://indiannursingcouncil.org/",
+      "category": "Nursing Education"
+    },
+    {
+      "name": "AIIMS Exams",
+      "url": "https://aiimsexams.ac.in/",
+      "category": "Exams and Recruitment"
+    },
+    {
+      "name": "World Health Organization",
+      "url": "https://www.who.int/news",
+      "category": "International Health"
+    },
+    {
+      "name": "Bareilly District",
+      "url": "https://bareilly.nic.in/",
+      "category": "Local Health"
+    }
+  ]
+}
