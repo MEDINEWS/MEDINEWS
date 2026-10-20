@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MediNews | Hassan Raza</title>
+<style>
+body{margin:0;background:#f4f1e9;color:#202820;font-family:Georgia,serif}
+header{text-align:center;background:#173b35;color:white;padding:24px 12px}
+h1{font-size:44px;margin:4px}
+header p{margin:8px}
+nav{background:#dce5df;padding:12px;text-align:center}
+nav span{margin:0 9px;font-size:14px}
+main{max-width:900px;margin:auto;padding:16px}
+h2{border-bottom:2px solid #173b35;padding-bottom:8px}
+.story{background:white;padding:16px;margin:12px 0;border:1px solid #ddd}
+.story h3{margin-top:0}
+small{color:#59665f}
+footer{text-align:center;padding:20px;background:#173b35;color:white}
+</style>
+</head>
+<body>
+<header>
+<p>DAILY HEALTHCARE NEWSPAPER</p>
+<h1>MediNews</h1>
+<p>Medical & Nursing News | India & World</p>
+<p>Edited by Hassan Raza</p>
+</header>
+<nav>
+<span>Nursing</span><span>Jobs</span><span>Exams</span>
+<span>Medical Research</span><span>Uttar Pradesh</span>
+</nav>
+<main>
+<p id="date"></p>
+<h2>Today's Healthcare Headlines</h2>
+<div class="story">
+<h3>Welcome to MediNews</h3>
+<p>Your daily source for nursing, medical recruitment,
+health policies, research and public health news.</p>
+<small>Website preview · No live news connected yet</small>
+</div>
+<div class="story">
+<h3>Verified News Only</h3>
+<p>Every published report should include its original
+source, publication date and a link to the source.</p>
+<small>Editorial policy · MediNews</small>
+</div>
+</main>
+<footer>
+MediNews · Edited by Hassan Raza
+</footer>
+<script>
+document.getElementById("date").textContent =
+"Edition date: " + new Date().toLocaleDateString("en-IN");
+</script>
+</body>
+</html>
