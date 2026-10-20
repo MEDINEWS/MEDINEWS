@@ -1,5 +1,5 @@
 
-name: MediNews Daily Update
+name: MediNews Daily Collector
 
 on:
   schedule:
@@ -10,10 +10,10 @@ permissions:
   contents: write
 
 jobs:
-  update:
+  collect:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout MediNews
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -21,15 +21,71 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Prepare daily edition
+      - name: Collect official news feeds
         run: |
-          mkdir -p editions
-          python -c "from datetime import datetime, timezone; from pathlib import Path; d=datetime.now(timezone.utc).strftime('%Y-%m-%d'); p=Path('editions')/(d+'.md'); p.write_text('# MediNews Daily Edition\n\nDate: '+d+'\n\nNews collection is not connected yet. No unverified news has been published.\n', encoding='utf-8'); print('Edition prepared:', p)"
+          pip install feedparser
+          python - <<'PY'
+          import feedparser, json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from html import escape
+
+          feeds = [
+              ("WHO News", "https://www.who.int/rss-feeds/news-english.xml"),
+              ("MoHFW", "https://mohfw.gov.in/"),
+          ]
+
+          stories = []
+          for name, url in feeds:
+              if not url.endswith(".xml"):
+                  continue
+              try:
+                  feed = feedparser.parse(url)
+                  for item in feed.entries[:10]:
+                      link = item.get("link", "")
+                      title = item.get("title", "").strip()
+                      if title and link.startswith("http"):
+                          stories.append({
+                              "source": name,
+                              "title": title,
+                              "url": link,
+                              "published": item.get("published", "Date not provided")
+                          })
+              except Exception as e:
+                  print(f"Feed unavailable: {name}: {e}")
+
+          date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+          Path("editions").mkdir(exist_ok=True)
+          lines = [
+              "# MediNews | Medical & Nursing E-Paper",
+              f"**Edition date (UTC): {date}**",
+              "",
+              "News links collected from the feeds below. Each story should be checked against its original source before being treated as verified.",
+              ""
+          ]
+
+          if stories:
+              for s in stories:
+                  lines += [
+                      f"## {s['title']}",
+                      f"- Source: {s['source']}",
+                      f"- Published: {s['published']}",
+                      f"- Original report: {s['url']}",
+                      ""
+                  ]
+          else:
+              lines += ["No feed stories were retrieved. No news has been fabricated."]
+
+          Path(f"editions/{date}.md").write_text(
+              "\n".join(lines), encoding="utf-8"
+          )
+          print(f"Collected {len(stories)} source-linked stories.")
+          PY
 
       - name: Save edition
         run: |
           git config user.name "MediNews Bot"
           git config user.email "actions-user@users.noreply.github.com"
           git add editions/
-          git diff --cached --quiet || git commit -m "Prepare MediNews daily edition"
+          git diff --cached --quiet || git commit -m "Collect MediNews sources"
           git push
