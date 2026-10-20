@@ -1,0 +1,35 @@
+
+name: MediNews Daily Update
+
+on:
+  schedule:
+    - cron: "30 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MediNews
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Prepare daily edition
+        run: |
+          mkdir -p editions
+          python -c "from datetime import datetime, timezone; from pathlib import Path; d=datetime.now(timezone.utc).strftime('%Y-%m-%d'); p=Path('editions')/(d+'.md'); p.write_text('# MediNews Daily Edition\n\nDate: '+d+'\n\nNews collection is not connected yet. No unverified news has been published.\n', encoding='utf-8'); print('Edition prepared:', p)"
+
+      - name: Save edition
+        run: |
+          git config user.name "MediNews Bot"
+          git config user.email "actions-user@users.noreply.github.com"
+          git add editions/
+          git diff --cached --quiet || git commit -m "Prepare MediNews daily edition"
+          git push
